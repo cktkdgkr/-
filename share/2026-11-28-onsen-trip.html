@@ -3,11 +3,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* Layout: single calm reading column; the overnight stays are a row-per-hotel ledger, the day trips are quieter cards. */
+/* Layout: single calm reading column; each resort group is a ledger with two date columns (금토 / 일월). */
 :root{
   --bg:#eef2f0; --surface:#f8faf9; --ink:#1d2b28; --muted:#5b6b67; --line:#d3ddd9;
-  --pine:#24473f; --steam:#2f7d73; --ok:#2e7d4f; --warn:#a4561c; --no:#8a8f8d;
-  --chip:#e1ebe7;
+  --pine:#24473f; --steam:#2f7d73; --ok:#2e7d4f; --warn:#a4561c; --no:#8a8f8d; --chip:#e1ebe7;
   --display:"Gowun Batang","Noto Serif KR",serif;
   --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
@@ -18,7 +17,7 @@
   --bg:#121a18; --surface:#1a2522; --ink:#e3ece9; --muted:#9cb0aa; --line:#2c3b37;
   --pine:#9fd3c6; --steam:#6cc3b5; --ok:#78c995; --warn:#e3a26b; --no:#7d8784; --chip:#22312d; color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
-.wrap{max-width:720px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:40px}
+.wrap{max-width:740px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:40px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;color:var(--pine)}
 h1{font-size:2rem;line-height:1.3}
 h2{font-size:1.35rem;margin-bottom:12px}
@@ -28,134 +27,130 @@ a{color:var(--steam);text-underline-offset:3px}
 a:focus-visible{outline:2px solid var(--steam);outline-offset:2px;border-radius:3px}
 .eyebrow{font-size:.78rem;letter-spacing:.08em;color:var(--muted);font-weight:500}
 .lede{color:var(--muted);margin-top:10px;max-width:62ch}
-.weather{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.day{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.day b{font-family:var(--display);font-size:1.05rem;color:var(--pine)}
-.day p{color:var(--muted);font-size:.92rem;margin-top:4px}
 .pick{border-left:3px solid var(--steam);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:8px}
 .say{background:var(--chip);border-radius:10px;padding:14px 16px;font-family:var(--display);font-size:1.02rem}
 .dest{display:flex;flex-direction:column;gap:12px}
-.dest+.dest{margin-top:28px}
+.dest+.dest{margin-top:32px}
 .meta{color:var(--muted);font-size:.9rem}
 .ledger{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.row{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:14px 16px;align-items:center}
+.head,.row{display:grid;grid-template-columns:minmax(0,1fr) 112px 112px;gap:4px 12px;padding:12px 16px;align-items:center}
+.head{font-size:.78rem;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--line);padding-block:8px}
+.head span:not(:first-child),.row .d{text-align:right}
 .row+.row{border-top:1px solid var(--line)}
 .row .name{font-weight:700;min-width:0}
-.row .sub{grid-column:1;color:var(--muted);font-size:.85rem}
-.row .price{grid-row:1/3;grid-column:2;text-align:right;font-variant-numeric:tabular-nums}
-.price strong{display:block;font-size:1.1rem}
-.price a{font-size:.85rem;white-space:nowrap}
-.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;border:1px solid currentColor}
-.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)}
+.row .sub{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+.d{font-variant-numeric:tabular-nums}
+.d strong{display:block;font-size:1.05rem}
+.d a{font-size:.82rem;white-space:nowrap}
+.d.full{color:var(--no);font-size:.88rem}
+.over{color:var(--warn);font-size:.78rem;display:block}
 .links{font-size:.88rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.92rem;display:flex;flex-direction:column;gap:6px}
 .out{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted)}
 .out li::before{content:"–";margin-right:8px;color:var(--no)}
-.out s{color:var(--no)}
 footer{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
-@media (max-width:440px){h1{font-size:1.65rem}.row{grid-template-columns:1fr}.row .price{grid-row:auto;grid-column:1;text-align:left;display:flex;gap:12px;align-items:baseline}.price strong{display:inline}}
+@media (max-width:480px){h1{font-size:1.65rem}.head{display:none}.row{grid-template-columns:1fr 1fr}.row .name{grid-column:1/-1}.row .d{text-align:left}.d::before{display:block;font-size:.75rem;color:var(--muted)}.d.fs::before{content:"금–토 11/27"}.d.sm::before{content:"일–월 11/29"}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">11월 28일(토) – 29일(일) · 서울 출발 · 대중교통</div>
-    <h1>이번 주말, 조용히 온천 다녀오자</h1>
-    <p class="lede">정적인 곳과 온천·사우나 위주로 골랐어요. 1박 숙소는 <b>11월 25일 오후 아고다에서 2인 1실로 빈방을 확인한 곳만</b> 남겼고, 가격은 1박 기준(세금·봉사료 별도)입니다.</p>
+    <div class="eyebrow">금–토 11/27~28 또는 일–월 11/29~30 · 1박 · 2인</div>
+    <h1>델피노 같은 온천 리조트에서 하룻밤</h1>
+    <p class="lede">설악 온천수를 쓰는 리조트 위주로 다시 골랐어요. 가격은 <b>11월 26일 여기어때 기준 1박 최저가</b>이고, 빈방이 있는 곳만 넣었어요. 예산은 1박 20만 원 안팎으로 잡았어요.</p>
   </header>
-
-  <section>
-    <h2>주말 날씨</h2>
-    <div class="weather">
-      <div class="day"><b>토요일 11/28</b><p>충남·전라·제주는 비. 경상권은 대체로 맑음. 비 오는 날 노천탕은 오히려 운치 있어요.</p></div>
-      <div class="day"><b>일요일 11/29</b><p>전국 대체로 맑음. 아침 -4~3℃, 낮 6~12℃로 추워요. 걷는 일정은 일요일에.</p></div>
-    </div>
-  </section>
 
   <section class="pick">
     <div class="eyebrow">추천 1순위</div>
-    <h2 style="margin:0">부산 동래온천 + 겨울 바다 (1박 2일)</h2>
-    <p>토요일에 비가 피해 가는 경상권이에요. 오후 KTX로 내려가 동래온천에서 몸을 녹이고, 하룻밤 자고, 일요일 아침 맑은 해운대를 걷는 일정이에요. 11/28에 해운대 빛축제도 시작해요.</p>
-    <p class="say">"이번 주말에 부산 동래온천 가자. 토요일에 부산은 맑대. 온천하고 자고, 일요일 아침엔 바다 보고 오자."</p>
+    <h2 style="margin:0">소노벨 델피노 EAST · 일–월이면 16만 5천 원</h2>
+    <p>소노펠리체 델피노와 같은 단지라 <b>온천수 사우나(노천탕 포함)와 오션플레이</b>를 똑같이 쓸 수 있어요. 펠리체는 1박 38~46만 원인데, 같은 단지의 소노벨·소노캄은 그 절반 정도예요. 노천탕은 12월 1일부터 겨울 휴장이라 <b>이번 주말이 올해 마지막 기회</b>예요.</p>
+    <p class="say">"델피노 가자. 펠리체 말고 바로 옆 소노벨인데 온천 사우나랑 노천탕은 똑같이 쓸 수 있대. 노천탕이 12월부터 문 닫아서 이번 주가 마지막이래."</p>
   </section>
 
   <section>
-    <h2>1박 2일 · 빈방 있는 곳</h2>
+    <h2>빈방 있는 온천 리조트</h2>
 
     <div class="dest">
-      <h3>부산 동래온천 · 허심청</h3>
-      <p class="meta">서울역 → KTX 약 2시간 30분 → 부산역 → 지하철 1호선 온천장역. 허심청 주말 입욕 1인 18,000원, 05:30~22:00.</p>
+      <h3>고성 델피노 단지 · 설악 온천수</h3>
+      <p class="meta">온천수 사우나: 06:00~20:00, 노천탕은 12/1~3/1 휴장. 서울 → 속초 고속버스 약 2시간 20분 → 택시 약 20분.</p>
       <div class="ledger">
+        <div class="head"><span>숙소</span><span>금–토 11/27</span><span>일–월 11/29</span></div>
         <div class="row">
-          <div class="name">호텔 농심 <span class="pill warn">잔여 1실</span></div>
-          <div class="sub">허심청과 연결된 호텔 · 평점 8.5</div>
-          <div class="price"><strong>₩334,774</strong><a href="https://www.agoda.com/ko-kr/hotel-nongshim_2/hotel/busan-kr.html?checkIn=2026-11-28&amp;los=1&amp;adults=2&amp;rooms=1&amp;children=0&amp;currencyCode=KRW" target="_blank" rel="noopener">아고다에서 보기 →</a></div>
+          <div class="name">소노벨 델피노 EAST<span class="sub">평점 8.9 · 리뉴얼한 동</span></div>
+          <div class="d fs"><strong>₩205,000</strong><a href="https://www.yeogi.com/domestic-accommodations/80376?checkIn=2026-11-27&amp;checkOut=2026-11-28&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+          <div class="d sm"><strong>₩165,000</strong><a href="https://www.yeogi.com/domestic-accommodations/80376?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
         </div>
         <div class="row">
-          <div class="name">대성관 온천 호텔 <span class="pill warn">잔여 1실</span></div>
-          <div class="sub">동래구 온천장 · 평점 8.3 · 가성비 좋음</div>
-          <div class="price"><strong>₩81,691</strong><a href="https://www.agoda.com/ko-kr/daeseonggwan-hotel-spa/hotel/busan-kr.html?checkIn=2026-11-28&amp;los=1&amp;adults=2&amp;rooms=1&amp;children=0&amp;currencyCode=KRW" target="_blank" rel="noopener">아고다에서 보기 →</a></div>
+          <div class="name">소노벨 델피노 WEST<span class="sub">평점 8.5 · 가장 저렴</span></div>
+          <div class="d fs"><strong>₩168,000</strong><a href="https://www.yeogi.com/domestic-accommodations/6421?checkIn=2026-11-27&amp;checkOut=2026-11-28&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+          <div class="d sm"><strong>₩134,000</strong><a href="https://www.yeogi.com/domestic-accommodations/6421?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+        </div>
+        <div class="row">
+          <div class="name">소노캄 델피노 AB동<span class="sub">평점 9.0 · 호텔형</span></div>
+          <div class="d fs"><strong>₩247,000</strong><span class="over">예산 조금 초과</span><a href="https://www.yeogi.com/domestic-accommodations/6799?checkIn=2026-11-27&amp;checkOut=2026-11-28&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+          <div class="d sm"><strong>₩205,000</strong><a href="https://www.yeogi.com/domestic-accommodations/6799?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+        </div>
+        <div class="row">
+          <div class="name">소노캄 델피노 C동<span class="sub">평점 9.0</span></div>
+          <div class="d fs full">빈방 없음</div>
+          <div class="d sm"><strong>₩180,000</strong><a href="https://www.yeogi.com/domestic-accommodations/67314?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
         </div>
       </div>
       <div class="links">
-        <span>소개: <a href="https://www.visitbusan.net/index.do?menuCd=DOM_000000202008001000&amp;uc_seq=1754&amp;lang_cd=ko" target="_blank" rel="noopener">비짓부산 — 허심청</a></span>
-        <span>후기: <a href="https://koreatripplanner.blogspot.com/2026/05/busan-hurshimchung-review-2026.html" target="_blank" rel="noopener">2026 허심청 이용 정리</a> · <a href="https://glasswallet.com/blog/busan-heosimcheong-admission-fee-guide/" target="_blank" rel="noopener">입장료 후기</a></span>
+        <span>소개: <a href="https://www.sonohotelsresorts.com/felice_dp/sauna/detail/ADD00131057" target="_blank" rel="noopener">소노 공식 — 델피노 온천 사우나</a></span>
+        <span>후기: <a href="https://search.naver.com/search.naver?where=blog&amp;query=%EC%86%8C%EB%85%B8%EB%B2%A8%20%EB%8D%B8%ED%94%BC%EB%85%B8%20%EC%98%A8%EC%B2%9C%20%EC%82%AC%EC%9A%B0%EB%82%98%20%ED%9B%84%EA%B8%B0" target="_blank" rel="noopener">네이버 블로그 (검색 링크)</a></span>
       </div>
     </div>
 
     <div class="dest">
-      <h3>충주 수안보 온천마을</h3>
-      <p class="meta">KTX 중부내륙선 약 1시간 30분 + 마을버스, 또는 동서울 → 수안보 시외버스(하루 약 6회). 한적한 옛 온천마을이라 가장 조용해요.</p>
+      <h3>속초 한화리조트 설악 쏘라노 · 설악 워터피아</h3>
+      <p class="meta">천연 온천수 테마탕 16개와 설악산이 보이는 야외 스파밸리가 바로 옆이에요. 속초 시내에서 가까워 택시 15분 안팎이에요.</p>
       <div class="ledger">
+        <div class="head"><span>숙소</span><span>금–토 11/27</span><span>일–월 11/29</span></div>
         <div class="row">
-          <div class="name">충주(수안보) 밀라노 <span class="pill warn">잔여 1실</span></div>
-          <div class="sub">평점 7.6 · 가장 저렴</div>
-          <div class="price"><strong>₩69,814</strong><a href="https://www.agoda.com/ko-kr/chungju-suanbo-milano/hotel/chungju-si-kr.html?checkIn=2026-11-28&amp;los=1&amp;adults=2&amp;rooms=1&amp;children=0&amp;currencyCode=KRW" target="_blank" rel="noopener">아고다에서 보기 →</a></div>
-        </div>
-        <div class="row">
-          <div class="name">수안보 온천 힐링 호텔 <span class="pill warn">잔여 2실</span></div>
-          <div class="sub">평점 7.8</div>
-          <div class="price"><strong>₩91,654</strong><a href="https://www.agoda.com/ko-kr/suanbo-hot-spring-healing-hotel-h92544346/hotel/chungju-si-kr.html?checkIn=2026-11-28&amp;los=1&amp;adults=2&amp;rooms=1&amp;children=0&amp;currencyCode=KRW" target="_blank" rel="noopener">아고다에서 보기 →</a></div>
-        </div>
-        <div class="row">
-          <div class="name">라마다 바이 윈덤 충주 수안보 <span class="pill ok">여유</span></div>
-          <div class="sub">평점 7.7 · 가장 큰 호텔</div>
-          <div class="price"><strong>₩144,546</strong><a href="https://www.agoda.com/ko-kr/the-chosun-hotel_5/hotel/chungju-si-kr.html?checkIn=2026-11-28&amp;los=1&amp;adults=2&amp;rooms=1&amp;children=0&amp;currencyCode=KRW" target="_blank" rel="noopener">아고다에서 보기 →</a></div>
+          <div class="name">한화리조트 설악 쏘라노 본관<span class="sub">평점 9.1 · 회원가 기준</span></div>
+          <div class="d fs"><strong>₩144,760</strong><a href="https://www.yeogi.com/domestic-accommodations/6426?checkIn=2026-11-27&amp;checkOut=2026-11-28&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+          <div class="d sm"><strong>₩125,960</strong><a href="https://www.yeogi.com/domestic-accommodations/6426?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
         </div>
       </div>
       <div class="links">
-        <span>소개: <a href="https://kr.trip.com/guide/stay/suanbo-hot-spring-hotel.html" target="_blank" rel="noopener">수안보 온천호텔 BEST 5</a> · <a href="https://bus.koreacharts.com/intercity-bus-terminal/NAI0511601/NAI2749601.html" target="_blank" rel="noopener">시외버스 시간표</a></span>
-        <span>후기: <a href="https://search.naver.com/search.naver?where=blog&amp;query=%EC%88%98%EC%95%88%EB%B3%B4%20%EC%98%A8%EC%B2%9C%20%ED%98%B8%ED%85%94%20%ED%9B%84%EA%B8%B0%202026" target="_blank" rel="noopener">네이버 블로그 (검색 링크)</a></span>
+        <span>소개: <a href="https://www.telltrip.com/domestic-travel/seorak-waterpia-hot-spring-winter-trip/" target="_blank" rel="noopener">텔트립 — 설악 워터피아 천연 온천수</a></span>
+        <span>후기: <a href="https://v.daum.net/v/QY5qFN8BuO" target="_blank" rel="noopener">설산이 보이는 온천 워터파크</a></span>
+      </div>
+    </div>
+
+    <div class="dest">
+      <h3>양양 오색온천 · 오색그린야드호텔</h3>
+      <p class="meta">설악산 남쪽 오색의 탄산·알칼리 온천이에요. 조용한 산속이라 '정적인 곳'에 가장 가까워요.</p>
+      <div class="ledger">
+        <div class="head"><span>숙소</span><span>금–토 11/27</span><span>일–월 11/29</span></div>
+        <div class="row">
+          <div class="name">오색그린야드호텔<span class="sub">평점 8.3 · 잔여 1실 · 회원가 기준</span></div>
+          <div class="d fs"><strong>₩130,540</strong><a href="https://www.yeogi.com/domestic-accommodations/7362?checkIn=2026-11-27&amp;checkOut=2026-11-28&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+          <div class="d sm"><strong>₩121,510</strong><a href="https://www.yeogi.com/domestic-accommodations/7362?checkIn=2026-11-29&amp;checkOut=2026-11-30&amp;personal=2" target="_blank" rel="noopener">예약 보기 →</a></div>
+        </div>
+      </div>
+      <div class="links">
+        <span>소개: <a href="https://map.naver.com/p/search/%EC%98%A4%EC%83%89%EA%B7%B8%EB%A6%B0%EC%95%BC%EB%93%9C%ED%98%B8%ED%85%94" target="_blank" rel="noopener">네이버 지도 (검색 링크)</a></span>
+        <span>후기: <a href="https://search.naver.com/search.naver?where=blog&amp;query=%EC%98%A4%EC%83%89%EA%B7%B8%EB%A6%B0%EC%95%BC%EB%93%9C%ED%98%B8%ED%85%94%20%ED%83%84%EC%82%B0%EC%98%A8%EC%B2%9C%20%ED%9B%84%EA%B8%B0" target="_blank" rel="noopener">네이버 블로그 (검색 링크)</a></span>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>당일치기 · 예약 없이 가볍게</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>아산 파라다이스 스파 도고</h3>
-        <p>비 오는 토요일에 빗소리 들으며 노천 유황온천. 물놀이 없이 '온천'만 이용하면 1인 13,000원이에요.</p>
-        <p class="meta">1호선·장항선 도고온천역 + 버스·택시 · 스파 주말 53,000원</p>
-        <div class="links"><a href="https://www.paradisespa.co.kr/Guidance/ServiceTime.do?MM=202" target="_blank" rel="noopener">공식 요금·시간</a><a href="https://www.lounzy.com/place/2026/01/13/538" target="_blank" rel="noopener">이용 후기</a></div>
-      </div>
-      <div class="card">
-        <h3>대전 유성온천</h3>
-        <p>KTX 1시간 + 지하철이라 가장 가벼워요. 무료 한방족욕장(08~22시)은 운영 중이고, 공원 족욕장은 12/18까지 휴장해요.</p>
-        <p class="meta">KTX 대전역 → 지하철 1호선 유성온천역</p>
-        <div class="links"><a href="https://www.ardentnews.co.kr/news/articleView.html?idxno=21705" target="_blank" rel="noopener">11월 운영 족욕장</a><a href="https://v.daum.net/v/34V2HfDgiQ" target="_blank" rel="noopener">족욕체험장 후기</a></div>
-      </div>
-    </div>
+  <section class="note">
+    <b>알아 두면 좋은 점</b>
+    <p>사우나·오션플레이·워터피아 이용료는 숙박비와 별도인 경우가 많아요. 패키지 상품(예: 소노 Water-ful)을 고르면 포함돼요.</p>
+    <p>빈방이 1~2개 남은 곳이 많아서, 예약 직전에 한 번 더 확인해 주세요.</p>
   </section>
 
   <section>
     <h2>확인했지만 뺀 곳</h2>
     <ul class="out">
-      <li><s>평창 월정사 템플스테이</s> 11/28 휴식형 1~2인실 예약 마감 (템플스테이 공식 사이트 확인, 11/30부터 가능)</li>
-      <li><s>봉은사·전등사 템플스테이</s> 아고다에 없는 숙소라 빈방을 확인하지 못해 제외</li>
-      <li><s>수안보 파크 호텔 · 수안보 사이판 온천호텔 · 수안보 호텔 스크린</s> 아고다에서 11/28 판매 완료</li>
+      <li>소노펠리체 델피노: 빈방은 있지만 1박 459,000원(금) / 380,000원(일)이라 예산을 많이 넘어요.</li>
+      <li>스플라스 리솜(덕산온천): 금–토 빈방 없음, 일–월 285,000원</li>
+      <li>포레스트 리솜(제천): 1박 45~50만 원대</li>
+      <li>덕구온천콘도(울진): 두 날짜 모두 빈방 없음</li>
     </ul>
   </section>
 
-  <footer>빈방과 가격은 11월 25일 오후 기준이라 금방 바뀔 수 있어요. 특히 '잔여 1실'인 곳은 예약하기 전에 다시 확인해 주세요. KTX 왕복(2인)은 부산 약 24만 원, 수안보 약 6~7만 원, 대전 약 9만 원으로 잡았어요.</footer>
+  <footer>가격은 11월 26일 오후 여기어때 1박 최저가(2인)예요. '회원가'는 로그인해야 보이는 가격이에요. 아고다에는 소노·한화 리조트가 올라와 있지 않아 여기어때에서 확인했어요.</footer>
 </div>
